@@ -1,0 +1,5 @@
+# Keep plaintext secrets local
+secrets/*.plaintext.yaml
+
+# Keep local certs out of git
+certs/
