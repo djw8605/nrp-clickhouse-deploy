@@ -12,6 +12,9 @@ patches:
     target:
       kind: ConfigMap
       name: nrp-accounting-config
+  - path: namespace-delete.yaml
+    target:
+      kind: Namespace
   - path: patches.yaml
     target:
       kind: Secret

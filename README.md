@@ -7,10 +7,10 @@ It tracks the upstream Kubernetes base and applies a `dev` overlay.
 
 ## Layout
 
-- `apps/my-app/overlays/dev/kustomization.yaml`
-- `apps/my-app/overlays/dev/configmap.yaml`
-- `apps/my-app/overlays/dev/patches.yaml`
-- `apps/my-app/overlays/dev/sealed-secret.yaml`
+- `apps/nrp-clickhouse/overlays/dev/kustomization.yaml`
+- `apps/nrp-clickhouse/overlays/dev/configmap.yaml`
+- `apps/nrp-clickhouse/overlays/dev/patches.yaml`
+- `apps/nrp-clickhouse/overlays/dev/sealed-secret.yaml`
 - `argocd/application-my-app-dev.yaml`
 
 ## What This Deploys
@@ -28,11 +28,11 @@ ClickHouse must exist separately and be reachable from the cluster.
    - Set `spec.source.repoURL` to this deployment repo.
 
 2. Image and tag for pipeline:
-   - File: `apps/my-app/overlays/dev/kustomization.yaml`
+   - File: `apps/nrp-clickhouse/overlays/dev/kustomization.yaml`
    - Update `images[].newName` and `images[].newTag`.
 
 3. Non-sensitive runtime settings:
-   - File: `apps/my-app/overlays/dev/configmap.yaml`
+   - File: `apps/nrp-clickhouse/overlays/dev/configmap.yaml`
    - Set values for:
      - `PROMETHEUS_URL`
      - `CLICKHOUSE_DATABASE`
@@ -45,7 +45,7 @@ ClickHouse must exist separately and be reachable from the cluster.
      - `CLICKHOUSE_WRITE_BATCH_SIZE`
 
 4. Sensitive ClickHouse credentials:
-   - File: `apps/my-app/overlays/dev/sealed-secret.yaml`
+   - File: `apps/nrp-clickhouse/overlays/dev/sealed-secret.yaml`
    - Must contain encrypted values for:
      - `CLICKHOUSE_HOST`
      - `CLICKHOUSE_USER`
@@ -57,7 +57,17 @@ ClickHouse must exist separately and be reachable from the cluster.
 
 The upstream base includes a plaintext `Secret` (`nrp-accounting-secrets`) with placeholder values.
 
-This overlay deletes that plaintext Secret (`apps/my-app/overlays/dev/patches.yaml`) and replaces it with a SealedSecret-managed Secret of the same name.
+This overlay deletes that plaintext Secret (`apps/nrp-clickhouse/overlays/dev/patches.yaml`) and replaces it with a SealedSecret-managed Secret of the same name.
+
+## Namespace Behavior
+
+This overlay is configured to **not** create a Namespace object.
+
+You must create the target namespace before applying:
+
+```bash
+kubectl create namespace access-accounting
+```
 
 ## Create / Update the Sealed Secret
 
@@ -83,7 +93,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: nrp-accounting-secrets
-  namespace: my-app-dev
+  namespace: access-accounting
 type: Opaque
 stringData:
   CLICKHOUSE_HOST: "clickhouse.example.org"
@@ -99,7 +109,7 @@ kubeseal \
   --cert certs/sealed-secrets.pem \
   --format yaml \
   < /tmp/nrp-accounting-secrets.yaml \
-  > apps/my-app/overlays/dev/sealed-secret.yaml
+  > apps/nrp-clickhouse/overlays/dev/sealed-secret.yaml
 ```
 
 4. Remove plaintext file:
@@ -115,12 +125,12 @@ kubectl apply -f argocd/application-my-app-dev.yaml
 ```
 
 Argo CD will reconcile:
-- `apps/my-app/overlays/dev`
+- `apps/nrp-clickhouse/overlays/dev`
 
 ## Local Validation
 
 ```bash
-kubectl kustomize apps/my-app/overlays/dev
+kubectl kustomize apps/nrp-clickhouse/overlays/dev
 ```
 
 Confirm output includes:
