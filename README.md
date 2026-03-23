@@ -20,6 +20,7 @@ The upstream repo deploys only the ETL pipeline resources (not ClickHouse):
 - config and service account resources
 
 ClickHouse must exist separately and be reachable from the cluster.
+The ETL also queries `portal.nrp.ai` each run to keep namespace metadata current in ClickHouse.
 
 ## Required Configuration
 
@@ -35,6 +36,7 @@ ClickHouse must exist separately and be reachable from the cluster.
    - File: `apps/nrp-clickhouse/overlays/dev/configmap.yaml`
    - Set values for:
      - `PROMETHEUS_URL`
+     - `PORTAL_RPC_URL`
      - `CLICKHOUSE_DATABASE`
      - `CLICKHOUSE_PORT`
      - `CLICKHOUSE_SECURE`
@@ -42,6 +44,7 @@ ClickHouse must exist separately and be reachable from the cluster.
      - `QUERY_STEP`
      - `RETRY_LIMIT`
      - `PROMETHEUS_TIMEOUT_SECONDS`
+     - `PORTAL_TIMEOUT_SECONDS`
      - `CLICKHOUSE_WRITE_BATCH_SIZE`
 
 4. Sensitive ClickHouse credentials:
