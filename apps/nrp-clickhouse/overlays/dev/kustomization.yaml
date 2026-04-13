@@ -23,4 +23,4 @@ patches:
 images:
   - name: ghcr.io/djw8605/nrp-clickhouse
     newName: ghcr.io/djw8605/nrp-clickhouse
-    newTag: sha-cbeeb24
+newTag: sha-7bed02c
