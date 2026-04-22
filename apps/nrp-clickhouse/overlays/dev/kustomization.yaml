@@ -12,6 +12,10 @@ patches:
     target:
       kind: ConfigMap
       name: nrp-accounting-config
+  - path: mcp-ingress.yaml
+    target:
+      kind: Ingress
+      name: nrp-accounting-mcp
   - path: namespace-delete.yaml
     target:
       kind: Namespace
@@ -23,4 +27,4 @@ patches:
 images:
   - name: ghcr.io/djw8605/nrp-clickhouse
     newName: ghcr.io/djw8605/nrp-clickhouse
-newTag: sha-7bed02c
+    newTag: sha-7bed02c

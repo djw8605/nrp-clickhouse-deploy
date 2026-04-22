@@ -15,8 +15,11 @@ It tracks the upstream Kubernetes base and applies a `dev` overlay.
 
 ## What This Deploys
 
-The upstream repo deploys only the ETL pipeline resources (not ClickHouse):
+The upstream repo deploys the NRP accounting ETL pipeline and MCP server resources (not ClickHouse):
 - `CronJob` (`nrp-accounting-etl`)
+- `Deployment` (`nrp-accounting-mcp`)
+- `Service` (`nrp-accounting-mcp`)
+- `Ingress` (`nrp-accounting-mcp`) at `https://nrp-accounting-mcp.nrp-nautilus.io`
 - config and service account resources
 
 ClickHouse must exist separately and be reachable from the cluster.
@@ -138,6 +141,9 @@ kubectl kustomize apps/nrp-clickhouse/overlays/dev
 
 Confirm output includes:
 - `CronJob/nrp-accounting-etl`
+- `Deployment/nrp-accounting-mcp`
+- `Service/nrp-accounting-mcp`
+- `Ingress/nrp-accounting-mcp` with host `nrp-accounting-mcp.nrp-nautilus.io`
 - `ConfigMap/nrp-accounting-config` with your values
 - `SealedSecret/nrp-accounting-secrets`
 - no plaintext `Secret/nrp-accounting-secrets`
