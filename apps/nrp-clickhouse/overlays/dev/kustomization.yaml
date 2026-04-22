@@ -12,6 +12,14 @@ patches:
     target:
       kind: ConfigMap
       name: nrp-accounting-config
+  - path: mcp-image-pull-policy.yaml
+    target:
+      kind: Deployment
+      name: nrp-accounting-mcp
+  - path: etl-image-pull-policy.yaml
+    target:
+      kind: CronJob
+      name: nrp-accounting-etl
   - path: mcp-ingress.yaml
     target:
       kind: Ingress
@@ -27,4 +35,4 @@ patches:
 images:
   - name: ghcr.io/djw8605/nrp-clickhouse
     newName: ghcr.io/djw8605/nrp-clickhouse
-    newTag: sha-7bed02c
+    newTag: latest
